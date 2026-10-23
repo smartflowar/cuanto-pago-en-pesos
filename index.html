@@ -1,0 +1,290 @@
+<!doctype html>
+<html lang="es-AR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>¿Cuánto pago en pesos?</title>
+<meta name="description" content="Calculá cuánto pagás en pesos una compra en dólares con tarjeta: Netflix, Spotify, ChatGPT, Steam, Amazon o viajes. Con impuestos actualizados y comparado con pagar con dólares propios. Gratis y sin registrarte.">
+<meta name="theme-color" content="#123B5C">
+<meta property="og:title" content="¿Cuánto pago en pesos?">
+<meta property="og:description" content="Precio en dólares → cuánto pagás en pesos con impuestos, y la forma más barata de pagarlo.">
+<meta property="og:locale" content="es_AR">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%23123B5C'/%3E%3Ctext x='16' y='23' font-size='19' text-anchor='middle' fill='white' font-family='Arial' font-weight='bold'%3E$%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Familjen+Grotesk:wght@600;700&family=Figtree:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+/* Layout: una pregunta grande arriba, formulario a la izquierda, comparación de formas de pago a la derecha; explicación debajo */
+:root{
+  --bg:#F3F5F2; --card:#FFFFFF; --ink:#14212B; --muted:#5C6B74; --line:#D7DEDA;
+  --accent:#123B5C; --accent-ink:#FFFFFF; --accent-soft:#E2EBF2;
+  --good:#1F7A4A; --good-soft:#E1F2E8; --warn:#9A5A00; --warn-soft:#FBEFD8;
+  --f-display:"Familjen Grotesk","Arial Narrow",system-ui,sans-serif;
+  --f-body:"Figtree","Segoe UI",system-ui,sans-serif;
+  --f-mono:"IBM Plex Mono",ui-monospace,Menlo,Consolas,monospace;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --bg:#0E1418; --card:#151E24; --ink:#E6ECEF; --muted:#94A3AB; --line:#283740;
+  --accent:#7DB6E3; --accent-ink:#081A28; --accent-soft:#1A2C3A;
+  --good:#6CCB95; --good-soft:#15301F; --warn:#E6AD55; --warn-soft:#33270F; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --bg:#0E1418; --card:#151E24; --ink:#E6ECEF; --muted:#94A3AB; --line:#283740;
+  --accent:#7DB6E3; --accent-ink:#081A28; --accent-soft:#1A2C3A;
+  --good:#6CCB95; --good-soft:#15301F; --warn:#E6AD55; --warn-soft:#33270F; color-scheme:dark}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:15.5px;line-height:1.55;
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:28px 48px}
+.wrap{max-width:1060px;margin:0 auto;display:grid;gap:22px}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance;letter-spacing:-.01em}
+header{display:grid;gap:8px}
+.brand{font-family:var(--f-mono);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--accent)}
+header h1{font-size:clamp(32px,6vw,52px);line-height:1;font-weight:700}
+header p{margin:0;color:var(--muted);max-width:62ch}
+.grid{display:grid;grid-template-columns:minmax(0,400px) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:840px){.grid{grid-template-columns:minmax(0,1fr)}}
+.panel{background:var(--card);border:1px solid var(--line);border-radius:14px;padding:20px;display:grid;gap:16px;min-width:0}
+.label{font-family:var(--f-mono);font-size:11.5px;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.field{display:grid;gap:6px;min-width:0}
+.field>label,.flabel{font-size:14px;font-weight:700}
+.hint{font-size:13px;color:var(--muted);margin:0}
+input,select{font:inherit;color:var(--ink);background:var(--bg);border:1px solid var(--line);border-radius:10px;padding:10px 12px;width:100%;min-width:0}
+input:focus-visible,select:focus-visible,button:focus-visible,a:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.usd{position:relative}
+.usd span{position:absolute;left:14px;top:50%;transform:translateY(-50%);font-family:var(--f-mono);color:var(--muted);font-size:18px}
+.usd input{font-family:var(--f-mono);font-size:26px;padding:12px 14px 12px 64px;font-variant-numeric:tabular-nums}
+.cats{display:grid;gap:8px}
+.cat{font:inherit;text-align:left;display:grid;gap:2px;border:1px solid var(--line);background:var(--bg);color:var(--ink);border-radius:10px;padding:10px 12px;cursor:pointer}
+.cat b{font-size:14.5px}
+.cat small{color:var(--muted);font-size:12.5px}
+.cat[aria-pressed="true"]{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);background:var(--accent-soft)}
+.row2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.money{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.rates{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.rates input{font-family:var(--f-mono)}
+/* resultado */
+.answer{display:grid;gap:4px}
+.answer .q{font-size:15px;color:var(--muted)}
+.answer .big{font-family:var(--f-display);font-weight:700;font-size:clamp(40px,7vw,60px);line-height:1;font-variant-numeric:tabular-nums}
+.opts{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+@media (max-width:560px){.opts{grid-template-columns:1fr}}
+.opt{border:1px solid var(--line);border-radius:12px;padding:14px;display:grid;gap:6px;align-content:start;min-width:0}
+.opt.best{border-color:var(--good);box-shadow:inset 0 0 0 1px var(--good)}
+.opt h3{font-size:16px;font-weight:700}
+.opt .amt{font-family:var(--f-mono);font-size:24px;font-weight:500;font-variant-numeric:tabular-nums}
+.tag{justify-self:start;font-family:var(--f-mono);font-size:11px;letter-spacing:.04em;border-radius:999px;padding:3px 9px;background:var(--good-soft);color:var(--good)}
+.tag.neutral{background:var(--accent-soft);color:var(--accent)}
+.save{background:var(--good-soft);color:var(--good);border-radius:10px;padding:10px 12px;font-weight:700;font-size:14.5px}
+.note{background:var(--warn-soft);color:var(--warn);border-radius:10px;padding:10px 12px;font-size:13.5px}
+table{border-collapse:collapse;width:100%;font-size:14px}
+td{padding:7px 0;border-bottom:1px solid var(--line)}
+td.num{text-align:right;white-space:nowrap;font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+tr.tot td{border-bottom:0;font-weight:700;border-top:2px solid var(--ink)}
+.btns{display:flex;flex-wrap:wrap;gap:10px}
+.btn{font:inherit;font-weight:700;font-size:14px;border-radius:10px;padding:11px 16px;cursor:pointer;border:1px solid var(--accent);background:var(--accent);color:var(--accent-ink);text-decoration:none;display:inline-flex;align-items:center;gap:8px}
+.btn.ghost{background:transparent;color:var(--accent)}
+.status{font-size:13px;color:var(--muted);min-height:1.2em}
+.cafe{display:flex;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:12px}
+article{display:grid;gap:10px;max-width:72ch}
+article h2{font-size:24px;margin-top:12px}
+article h3{font-size:17px;margin-top:6px}
+article p,article ul{margin:0}
+article a{color:var(--accent)}
+footer{font-size:12.5px;color:var(--muted);border-top:1px solid var(--line);padding-top:16px}
+[hidden]{display:none!important}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <span class="brand">Compras en dólares · Argentina</span>
+    <h1>¿Cuánto pago en pesos?</h1>
+    <p>Poné el precio en dólares y te decimos cuánto te sale con impuestos y cuál es la forma más barata de pagarlo. Con la cotización del día. Gratis y sin registrarte.</p>
+  </header>
+
+  <main class="grid">
+    <form class="panel" id="form" autocomplete="off">
+      <div class="field">
+        <label for="monto">Precio en dólares</label>
+        <div class="usd"><span>US$</span><input id="monto" inputmode="decimal" value="15,49"></div>
+      </div>
+      <div class="field">
+        <span class="flabel" id="catLbl">¿Qué estás pagando?</span>
+        <div class="cats" role="group" aria-labelledby="catLbl" id="cats">
+          <button type="button" class="cat" data-c="digital" aria-pressed="true"><b>Suscripciones y apps</b><small>Netflix, Spotify, ChatGPT, YouTube Premium, iCloud, Canva</small></button>
+          <button type="button" class="cat" data-c="juegos" aria-pressed="false"><b>Videojuegos</b><small>Steam, PlayStation, Xbox, Nintendo, Epic Games</small></button>
+          <button type="button" class="cat" data-c="productos" aria-pressed="false"><b>Compras online de productos</b><small>Amazon, AliExpress, Shein, eBay</small></button>
+          <button type="button" class="cat" data-c="viaje" aria-pressed="false"><b>Viajes y gastos en el exterior</b><small>Hotel, Airbnb, pasajes, comidas y compras afuera</small></button>
+        </div>
+      </div>
+      <div class="field" id="f-iibb">
+        <label for="iibb">Ingresos Brutos de tu provincia</label>
+        <select id="iibb">
+          <option value="0">0% (mi provincia no lo cobra)</option>
+          <option value="2" selected>2% (CABA y Buenos Aires, aprox.)</option>
+          <option value="3">3%</option>
+          <option value="5">5%</option>
+        </select>
+        <p class="hint">Solo se cobra en suscripciones, apps y videojuegos. Si no sabés, mirá la línea "IIBB" de tu resumen de tarjeta.</p>
+      </div>
+      <div class="field">
+        <span class="flabel">Cotizaciones de hoy</span>
+        <div class="rates">
+          <div class="field"><label for="oficial" class="hint">Oficial (venta)</label><input id="oficial" inputmode="decimal"></div>
+          <div class="field"><label for="mep" class="hint">MEP (venta)</label><input id="mep" inputmode="decimal"></div>
+        </div>
+        <p class="hint" id="ratesHint">Cargando cotizaciones…</p>
+      </div>
+    </form>
+
+    <section class="panel" aria-live="polite">
+      <div class="answer">
+        <span class="q" id="qTxt">Pagando en pesos con la tarjeta, te sale</span>
+        <span class="big money" id="big">—</span>
+      </div>
+      <div class="opts">
+        <div class="opt" id="optA">
+          <span class="tag neutral" id="tagA">Lo más común</span>
+          <h3>En pesos con la tarjeta</h3>
+          <span class="amt" id="amtA">—</span>
+          <p class="hint">El banco te lo cobra en pesos en el resumen, con todos los impuestos.</p>
+        </div>
+        <div class="opt" id="optB">
+          <span class="tag" id="tagB">Más barato</span>
+          <h3>Con dólares propios</h3>
+          <span class="amt" id="amtB">—</span>
+          <p class="hint">Comprás dólares MEP en tu banco o app y pagás el resumen en dólares. Así no te cobran la percepción del 30%.</p>
+        </div>
+      </div>
+      <div class="save" id="save" hidden></div>
+      <div>
+        <div class="label" style="margin-bottom:4px">Detalle pagando en pesos</div>
+        <table><tbody id="det"></tbody></table>
+      </div>
+      <div class="note" id="note" hidden></div>
+      <div class="btns">
+        <button class="btn ghost" type="button" id="wa">Mandar por WhatsApp</button>
+        <button class="btn ghost" type="button" id="copiar">Copiar resultado</button>
+      </div>
+      <div class="status" id="st"></div>
+    </section>
+  </main>
+
+  <section class="panel cafe">
+    <div><div class="label">Apoyá el proyecto</div><p style="margin:4px 0 0">¿Te ahorró plata? Invitame un cafecito para mantenerla gratis y actualizada.</p></div>
+    <a class="btn" href="https://cafecito.app/sitios-web-cafecito" target="_blank" rel="noopener">☕ Invitame un cafecito</a>
+  </section>
+
+  <article>
+    <h2>Cómo se calcula</h2>
+    <p>Todo parte del dólar oficial de venta del día. Sobre ese valor se suman los impuestos que corresponden según lo que compres:</p>
+    <ul>
+      <li><b>Percepción de Ganancias (30%)</b>: se cobra en casi todas las compras en dólares pagadas en pesos. No se cobra en videojuegos desde abril de 2025.</li>
+      <li><b>IVA (21%)</b>: se cobra en servicios digitales del exterior, como suscripciones, apps y videojuegos.</li>
+      <li><b>Ingresos Brutos</b>: algunas provincias cobran un porcentaje extra sobre los servicios digitales. Varía según dónde vivís.</li>
+    </ul>
+    <h3>¿Por qué conviene pagar con dólares propios?</h3>
+    <p>La percepción del 30% se aplica solo a la parte que pagás en pesos. Si comprás dólares MEP y pagás el saldo en dólares de la tarjeta, no te la cobran. El IVA y los Ingresos Brutos de los servicios digitales se siguen cobrando en pesos. Antes de hacerlo, confirmá con tu banco cómo se paga el saldo en dólares.</p>
+    <h3>¿La percepción del 30% se recupera?</h3>
+    <p>Sí. Es un pago a cuenta de Ganancias o Bienes Personales. Si no pagás esos impuestos, podés pedir la devolución a ARCA después de que termina el año, con tu CUIT y clave fiscal.</p>
+    <h3>Compras de productos del exterior</h3>
+    <p>Para Amazon, AliExpress o Shein el cálculo muestra lo que pagás con la tarjeta. Si el envío llega por courier, puede haber impuestos de importación aparte, que se pagan al recibir el paquete.</p>
+  </article>
+
+  <footer>Herramienta informativa con valores aproximados. El monto final depende de tu banco, la fecha de cierre del resumen y la cotización de ese día. Cotizaciones: DolarApi. Normativa: ARCA (RG 5617/2024 y RG 5677/2025).</footer>
+</div>
+
+<script>
+"use strict";
+(function(){
+const $=id=>document.getElementById(id);
+const CATS={
+  digital:{nombre:"Suscripciones y apps",perc:30,iva:21,iibb:true},
+  juegos:{nombre:"Videojuegos",perc:0,iva:21,iibb:true},
+  productos:{nombre:"Compras online de productos",perc:30,iva:0,iibb:false},
+  viaje:{nombre:"Viajes y gastos en el exterior",perc:30,iva:0,iibb:false}
+};
+let cat="digital", fechaCot=null;
+
+const fmt=n=>"$ "+Math.round(n).toLocaleString("es-AR");
+const fmtUsd=n=>"US$ "+n.toLocaleString("es-AR",{minimumFractionDigits:2,maximumFractionDigits:2});
+function num(s){
+  s=String(s||"").trim().replace(/[^\d,.-]/g,"");
+  if(s.includes(","))s=s.replace(/\./g,"").replace(",",".");
+  else if((s.match(/\./g)||[]).length>1||/\.\d{3}$/.test(s))s=s.replace(/\./g,"");
+  const v=parseFloat(s); return isFinite(v)?v:NaN;
+}
+
+/* cálculo puro */
+function calcular(usd,c,oficial,mep,iibbPct){
+  const C=CATS[c], base=usd*oficial, iibb=C.iibb?iibbPct:0;
+  const partes=[["Precio al dólar oficial",base]];
+  if(C.iva)partes.push(["IVA "+C.iva+"%",base*C.iva/100]);
+  if(iibb)partes.push(["Ingresos Brutos "+iibb+"%",base*iibb/100]);
+  if(C.perc)partes.push(["Percepción Ganancias "+C.perc+"% (recuperable)",base*C.perc/100]);
+  const pesos=partes.reduce((a,p)=>a+p[1],0);
+  const propios=(mep>0?usd*mep:NaN)+base*(C.iva+iibb)/100;
+  return {partes,pesos,propios,perc:base*C.perc/100};
+}
+
+function render(){
+  const usd=num($("monto").value), of=num($("oficial").value), mep=num($("mep").value), ii=+$("iibb").value;
+  document.querySelectorAll(".cat").forEach(b=>b.setAttribute("aria-pressed",b.dataset.c===cat));
+  $("f-iibb").hidden=!CATS[cat].iibb;
+  const det=$("det"); det.innerHTML=""; $("save").hidden=true; $("note").hidden=true;
+  if(!(usd>0)||!(of>0)){$("big").textContent="—";$("amtA").textContent="—";$("amtB").textContent="—";$("qTxt").textContent=!(of>0)?"Cargá la cotización del dólar oficial para calcular.":"Poné el precio en dólares para calcular.";return null;}
+  const r=calcular(usd,cat,of,mep,ii);
+  $("qTxt").textContent="Pagando "+fmtUsd(usd)+" en pesos con la tarjeta, te sale";
+  $("big").textContent=fmt(r.pesos);
+  $("amtA").textContent=fmt(r.pesos);
+  $("amtB").textContent=isFinite(r.propios)?fmt(r.propios):"—";
+  const bBest=isFinite(r.propios)&&r.propios<r.pesos-1;
+  const aBest=isFinite(r.propios)&&r.pesos<r.propios-1;
+  $("optB").classList.toggle("best",bBest); $("tagB").hidden=!bBest;
+  $("optA").classList.toggle("best",aBest); $("tagA").textContent=aBest?"Más barato":"Lo más común"; $("tagA").className="tag"+(aBest?"":" neutral");
+  if(bBest){$("save").hidden=false;$("save").textContent="Pagando con dólares propios te ahorrás "+fmt(r.pesos-r.propios)+" en esta compra.";}
+  r.partes.forEach(([k,v])=>{const tr=document.createElement("tr");tr.innerHTML='<td></td><td class="num"></td>';tr.children[0].textContent=k;tr.children[1].textContent=fmt(v);det.appendChild(tr);});
+  const tr=document.createElement("tr");tr.className="tot";tr.innerHTML='<td>Total en pesos</td><td class="num"></td>';tr.children[1].textContent=fmt(r.pesos);det.appendChild(tr);
+  if(cat==="juegos"){$("note").hidden=false;$("note").textContent="En videojuegos no se cobra la percepción del 30% desde abril de 2025, así que pagar en pesos suele convenir más.";}
+  else if(cat==="productos"){$("note").hidden=false;$("note").textContent="Si el producto llega por courier, puede haber impuestos de importación aparte al recibirlo.";}
+  else if(r.perc>0&&!bBest){$("note").hidden=false;$("note").textContent="De ese total, "+fmt(r.perc)+" son la percepción del 30%, que podés recuperar a fin de año.";}
+  try{localStorage.setItem("cuanto-pago",JSON.stringify({m:$("monto").value,c:cat,i:$("iibb").value}));}catch(e){}
+  return r;
+}
+function texto(){
+  const r=render(); if(!r)return "";
+  const usd=num($("monto").value);
+  const L=["💵 *¿Cuánto pago en pesos?*",CATS[cat].nombre+": "+fmtUsd(usd),"","• En pesos con la tarjeta: *"+fmt(r.pesos)+"*"];
+  if(isFinite(r.propios))L.push("• Con dólares propios (MEP): *"+fmt(r.propios)+"*");
+  L.push("","Dólar oficial "+fmt(num($("oficial").value))+" · MEP "+fmt(num($("mep").value)),"","_Calculado en "+(location.host||"¿Cuánto pago en pesos?")+"_");
+  return L.join("\n");
+}
+
+/* cotizaciones en vivo */
+async function cotizaciones(){
+  try{
+    const r=await fetch("https://dolarapi.com/v1/dolares",{cache:"no-cache"}); if(!r.ok)throw 0;
+    const j=await r.json(), of=j.find(x=>x.casa==="oficial"), mep=j.find(x=>x.casa==="bolsa");
+    if(of&&of.venta)$("oficial").value=of.venta.toLocaleString("es-AR");
+    if(mep&&mep.venta)$("mep").value=mep.venta.toLocaleString("es-AR");
+    const f=of&&of.fechaActualizacion?new Date(of.fechaActualizacion):null;
+    $("ratesHint").textContent="Actualizadas solas"+(f?" ("+f.toLocaleDateString("es-AR")+" "+f.toLocaleTimeString("es-AR",{hour:"2-digit",minute:"2-digit"})+")":"")+". Si tu banco usa otro valor, cambialo acá.";
+  }catch(e){
+    $("ratesHint").textContent="No pudimos traer la cotización. Escribila a mano: la ves en la web de tu banco.";
+  }
+  render();
+}
+
+try{const o=JSON.parse(localStorage.getItem("cuanto-pago")||"null"); if(o){if(o.m)$("monto").value=o.m; if(CATS[o.c])cat=o.c; if(o.i)$("iibb").value=o.i;}}catch(e){}
+document.querySelectorAll(".cat").forEach(b=>b.addEventListener("click",()=>{cat=b.dataset.c;render();}));
+document.querySelectorAll("input,select").forEach(el=>el.addEventListener("input",render));
+$("form").addEventListener("submit",e=>e.preventDefault());
+$("copiar").addEventListener("click",()=>{const t=texto(); if(!t)return; navigator.clipboard.writeText(t).then(()=>{$("st").textContent="Resultado copiado.";}).catch(()=>{$("st").textContent="No se pudo copiar. Usá el botón de WhatsApp.";});});
+$("wa").addEventListener("click",()=>{const t=texto(); if(!t){$("st").textContent="Completá el precio para poder mandarlo.";return;} location.href="https://api.whatsapp.com/send?text="+encodeURIComponent(t);});
+render(); cotizaciones();
+if(typeof window!=="undefined")window.__calc=calcular;
+})();
+</script>
+</body>
+</html>
